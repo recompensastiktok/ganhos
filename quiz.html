@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Pesquisa TikTok</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .primary-btn { background: linear-gradient(90deg, #25F4EE 0%, #F122C8 100%); color: white; font-weight: 600; padding: 0.8rem 1rem; border-radius: 0.5rem; transition: all 0.3s ease; }
+        .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.15); }
+        .security-badge { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border: 1px solid #e5e7eb; border-radius: 9999px; background-color: white; }
+        .progress-bar { width: 60%; background-color: #e5e7eb; border-radius: 9999px; height: 8px; overflow: hidden; }
+        .progress-bar-inner { height: 100%; background: linear-gradient(90deg, #25F4EE 0%, #F122C8 100%); border-radius: 9999px; transition: width 0.5s ease-in-out; }
+        .option-btn { width: 100%; text-align: left; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-weight: 500; transition: all 0.2s ease; }
+        .option-btn:hover { border-color: #25F4EE; background-color: #f0fdfa; }
+        .option-btn.selected { border-color: #14b8a6; background-color: #ccfbf1; color: #0f766e; font-weight: 600; }
+        #reward-popup { transition: opacity 0.3s ease; }
+        .money-icon { 
+            font-weight: bold; 
+            font-size: 2rem; 
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Popup de Recompensa -->
+    <div id="reward-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white text-gray-800 p-8 rounded-xl text-center shadow-xl border-2 border-green-400 max-w-xs mx-4">
+            <div class="money-icon mb-4">$</div>
+            <p class="font-semibold text-lg mb-2">Resposta Registrada!</p>
+            <p id="reward-amount" class="font-bold text-4xl my-3 text-green-600">R$ 0,00</p>
+            <p class="text-sm text-gray-600">Valor creditado com sucesso</p>
+        </div>
+    </div>
+
+    <!-- Página de Parabéns (oculta inicialmente) -->
+    <div id="congrats-page" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl border border-gray-200">
+            <div class="mb-6">
+                <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">PESQUISA CONCLUÍDA!</h1>
+                <p class="text-gray-600">Obrigado por sua contribuição</p>
+            </div>
+            
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 mb-6 text-white shadow-lg">
+                <p class="text-sm opacity-90 mb-2">Total para Saque</p>
+                <p id="final-reward" class="text-5xl font-bold my-3">R$ 450,00</p>
+                <p class="text-sm opacity-90">Disponível via PIX</p>
+            </div>
+
+            <div class="space-y-3 text-sm text-gray-600 mb-6">
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-green-600">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Pesquisa Concluída:
+                    </span>
+                    <span class="font-semibold text-green-600">100%</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-blue-600">
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            <path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"></path>
+                        </svg>
+                        Status:
+                    </span>
+                    <span class="font-semibold text-blue-600">Pronto para saque</span>
+                </div>
+            </div>
+
+            <button onclick="goToDados()" class="w-full primary-btn text-lg py-4 font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                RECEBER AGORA
+            </button>
+
+            <p class="text-xs text-gray-500 mt-4 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Pagamento 100% seguro
+            </p>
+        </div>
+    </div>
+    
+    <div class="max-w-md mx-auto min-h-screen flex flex-col p-4">
+        <header class="w-full flex justify-between items-center py-4">
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" alt="TikTok Logo" class="h-8">
+            <div class="security-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-600">Site Seguro</span>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center justify-center w-full">
+            <div class="w-full bg-white p-4 rounded-xl shadow-md mb-6 text-center border border-gray-200">
+                <p class="text-gray-500 font-medium">Total Acumulado</p>
+                <p id="total-earned" class="text-4xl font-bold text-gray-800">R$ 0,00</p>
+            </div>
+
+            <div id="quiz-container" class="w-full bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">Pergunta <span id="question-number">1</span>/7</h2>
+                    <div class="progress-bar">
+                        <div id="progress-bar-inner" class="progress-bar-inner" style="width: 14%"></div>
+                    </div>
+                </div>
+                <p id="question-text" class="text-base font-medium mb-6">Qual é o seu tipo de conteúdo favorito no TikTok?</p>
+                <div id="options-container" class="space-y-3">
+                    <button class="option-btn" onclick="selectAnswer(this, 60)">Dancinhas e desafios</button>
+                    <button class="option-btn" onclick="selectAnswer(this, 60)">Dicas e tutoriais</button>
+                    <button class="option-btn" onclick="selectAnswer(this, 60)">Humor e entretenimento</button>
+                    <button class="option-btn" onclick="selectAnswer(this, 60)">Notícias e atualidades</button>
+                    <button class="option-btn" onclick="selectAnswer(this, 60)">Beleza e moda</button>
+                </div>
+            </div>
+
+            <button id="next-question-btn" class="w-full primary-btn mt-6 hidden" onclick="nextQuestion()">
+                PRÓXIMA PERGUNTA
+            </button>
+        </main>
+        
+        <footer class="w-full text-center py-4">
+            <p class="text-xs text-gray-400">&copy; 2025 Universo Digital Entretenimento. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        const questions = [
+            { 
+                question: "Qual é o seu tipo de conteúdo favorito no TikTok?", 
+                reward: 60.00,
+                options: ["Dancinhas e desafios", "Dicas e tutoriais", "Humor e entretenimento", "Notícias e atualidades", "Beleza e moda"]
+            },
+            { 
+                question: "Com que frequência você usa o TikTok?", 
+                reward: 60.00,
+                options: ["Várias vezes ao dia", "Uma vez por dia", "Algumas vezes por semana", "Raramente", "Só quando alguém me envia um vídeo"]
+            },
+            { 
+                question: "Qual recurso do TikTok você mais utiliza?", 
+                reward: 65.00,
+                options: ["Para Você (Feed principal)", "Busca por hashtags", "Criar meus próprios vídeos", "Live streams", "Direct (mensagens)"]
+            },
+            { 
+                question: "Você já comprou algo após ver no TikTok?", 
+                reward: 65.00,
+                options: ["Sim, várias vezes", "Sim, uma ou duas vezes", "Já coloquei na lista de desejos", "Não, mas já fiquei tentado(a)", "Não, nunca comprei nada"]
+            },
+            { 
+                question: "Qual é a sua opinião sobre os anúncios no TikTok?", 
+                reward: 65.00,
+                options: ["São relevantes e interessantes", "Às vezes são úteis", "Não presto muita atenção", "Acho irritantes", "Uso adblock para não vê-los"]
+            },
+            { 
+                question: "Você já participou de algum desafio ou trend do TikTok?", 
+                reward: 65.00,
+                options: ["Sim, vários!", "Sim, um ou dois", "Já tentei, mas não postei", "Só assisto, não participo", "Não conheço esses desafios"]
+            },
+            { 
+                question: "O que mais poderia melhorar no TikTok?", 
+                reward: 70.00,
+                options: ["Mais controle sobre o algoritmo", "Menos anúncios", "Ferramentas de criação melhores", "Mais opções de privacidade", "Está ótimo como está"]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let totalEarned = 0;
+
+        function selectAnswer(selectedButton, reward) {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+                if (btn !== selectedButton) {
+                    btn.classList.remove('selected');
+                }
+            });
+            selectedButton.classList.add('selected');
+
+            setTimeout(() => {
+                showReward(reward);
+            }, 500);
+        }
+
+        function showReward(reward) {
+            const rewardPopup = document.getElementById('reward-popup');
+            const rewardAmount = document.getElementById('reward-amount');
+            
+            rewardAmount.textContent = 'R$ 0,00';
+            rewardPopup.classList.remove('hidden');
+            
+            let currentValue = 0;
+            const increment = reward / 20;
+            const interval = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= reward) {
+                    currentValue = reward;
+                    clearInterval(interval);
+                }
+                rewardAmount.textContent = `R$ ${currentValue.toFixed(2).replace('.', ',')}`;
+            }, 50);
+
+            setTimeout(() => {
+                rewardPopup.classList.add('hidden');
+                
+                totalEarned += reward;
+                document.getElementById('total-earned').textContent = `R$ ${totalEarned.toFixed(2).replace('.', ',')}`;
+
+                document.getElementById('next-question-btn').classList.remove('hidden');
+            }, 2000);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                renderQuestion();
+                document.getElementById('next-question-btn').classList.add('hidden');
+            } else {
+                showCongratulations();
+            }
+        }
+
+        function showCongratulations() {
+            // Mostrar página de parabéns
+            const congratsPage = document.getElementById('congrats-page');
+            const finalReward = document.getElementById('final-reward');
+            
+            // Valor fixo R$ 450,00 sem animação
+            finalReward.textContent = 'R$ 450,00';
+            
+            congratsPage.classList.remove('hidden');
+        }
+
+        function goToDados() {
+            localStorage.setItem('quizTotal', totalEarned);
+            window.location.href = 'dados.html';
+        }
+
+        function renderQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress-bar-inner').style.width = `${progress}%`;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(button, question.reward);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Renderiza a primeira questão
+        renderQuestion();
+    </script>
+</body>
+</html>
