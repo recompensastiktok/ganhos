@@ -18,24 +18,66 @@
         .option-btn { width: 100%; text-align: left; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-weight: 500; transition: all 0.2s ease; }
         .option-btn:hover { border-color: #25F4EE; background-color: #f0fdfa; }
         .option-btn.selected { border-color: #14b8a6; background-color: #ccfbf1; color: #0f766e; font-weight: 600; }
-        #reward-popup { transition: opacity 0.3s ease; }
+        
+        /* Animações para o novo popup */
+        @keyframes scale-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes count-up {
+            0% { transform: translateY(10px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-scale-in {
+            animation: scale-in 0.3s ease-out;
+        }
+        
+        .animate-count {
+            animation: count-up 0.5s ease-out;
+        }
+        
         .money-icon { 
             font-weight: bold; 
-            font-size: 2rem; 
-            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background: linear-gradient(45deg, #FFFFFF, #F0FFF0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
+        
+        #reward-popup { transition: opacity 0.3s ease; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
-    <!-- Popup de Recompensa -->
-    <div id="reward-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white text-gray-800 p-8 rounded-xl text-center shadow-xl border-2 border-green-400 max-w-xs mx-4">
-            <div class="money-icon mb-4">$</div>
-            <p class="font-semibold text-lg mb-2">Resposta Registrada!</p>
-            <p id="reward-amount" class="font-bold text-4xl my-3 text-green-600">R$ 0,00</p>
-            <p class="text-sm text-gray-600">Valor creditado com sucesso</p>
+    <!-- Popup de Recompensa - NOVO DESIGN -->
+    <div id="reward-popup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 text-center shadow-2xl max-w-xs mx-4 border border-gray-100 transform animate-scale-in">
+            <!-- Ícone animado -->
+            <div class="relative mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto shadow-lg animate-pulse">
+                    <div class="money-icon text-3xl">$</div>
+                </div>
+                <div class="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center animate-bounce">
+                    <span class="text-white font-bold text-sm">+</span>
+                </div>
+            </div>
+            
+            <!-- Texto -->
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Resposta Registrada!</h3>
+            
+            <!-- Valor animado -->
+            <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 mb-4 border border-green-200">
+                <p class="text-sm text-gray-600 mb-1">Você ganhou:</p>
+                <p id="reward-amount" class="text-4xl font-bold text-green-600 animate-count">R$ 0,00</p>
+            </div>
+            
+            <!-- Barra de progresso sutil -->
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-1000" style="width: 100%"></div>
+            </div>
+            
+            <p class="text-sm text-gray-500">Valor creditado com sucesso</p>
         </div>
     </div>
 
