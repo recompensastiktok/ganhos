@@ -19,14 +19,83 @@
         .option-btn:hover { border-color: #25F4EE; background-color: #f0fdfa; }
         .option-btn.selected { border-color: #14b8a6; background-color: #ccfbf1; color: #0f766e; font-weight: 600; }
         #reward-popup { transition: opacity 0.3s ease; }
+        .money-icon { 
+            font-weight: bold; 
+            font-size: 2rem; 
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
+    <!-- Popup de Recompensa -->
     <div id="reward-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-gradient-to-r from-cyan-400 to-pink-500 text-white p-8 rounded-xl text-center shadow-xl">
-            <p class="font-semibold text-lg">Você ganhou</p>
-            <p id="reward-amount" class="font-bold text-4xl my-2">R$ 0,00</p>
-            <p class="text-sm">por responder esta pergunta!</p>
+        <div class="bg-white text-gray-800 p-8 rounded-xl text-center shadow-xl border-2 border-green-400 max-w-xs mx-4">
+            <div class="money-icon mb-4">$</div>
+            <p class="font-semibold text-lg mb-2">Resposta Registrada!</p>
+            <p id="reward-amount" class="font-bold text-4xl my-3 text-green-600">R$ 0,00</p>
+            <p class="text-sm text-gray-600">Valor creditado com sucesso</p>
+        </div>
+    </div>
+
+    <!-- Página de Parabéns (oculta inicialmente) -->
+    <div id="congrats-page" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl border border-gray-200">
+            <div class="mb-6">
+                <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">PESQUISA CONCLUÍDA!</h1>
+                <p class="text-gray-600">Obrigado por sua contribuição</p>
+            </div>
+            
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 mb-6 text-white shadow-lg">
+                <p class="text-sm opacity-90 mb-2">Total para Saque</p>
+                <p id="final-reward" class="text-5xl font-bold my-3">R$ 450,00</p>
+                <p class="text-sm opacity-90">Disponível via PIX</p>
+            </div>
+
+            <div class="space-y-3 text-sm text-gray-600 mb-6">
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-green-600">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Pesquisa Concluída:
+                    </span>
+                    <span class="font-semibold text-green-600">100%</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-blue-600">
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            <path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"></path>
+                        </svg>
+                        Status:
+                    </span>
+                    <span class="font-semibold text-blue-600">Pronto para saque</span>
+                </div>
+            </div>
+
+            <button onclick="goToDados()" class="w-full primary-btn text-lg py-4 font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                RECEBER AGORA
+            </button>
+
+            <p class="text-xs text-gray-500 mt-4 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Pagamento 100% seguro
+            </p>
         </div>
     </div>
     
@@ -42,12 +111,12 @@
         </header>
 
         <main class="flex-grow flex flex-col items-center justify-center w-full">
-            <div class="w-full bg-white p-4 rounded-xl shadow-md mb-6 text-center">
+            <div class="w-full bg-white p-4 rounded-xl shadow-md mb-6 text-center border border-gray-200">
                 <p class="text-gray-500 font-medium">Total Acumulado</p>
                 <p id="total-earned" class="text-4xl font-bold text-gray-800">R$ 0,00</p>
             </div>
 
-            <div id="quiz-container" class="w-full bg-white p-6 rounded-xl shadow-lg">
+            <div id="quiz-container" class="w-full bg-white p-6 rounded-xl shadow-lg border border-gray-200">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold">Pergunta <span id="question-number">1</span>/7</h2>
                     <div class="progress-bar">
@@ -65,7 +134,7 @@
             </div>
 
             <button id="next-question-btn" class="w-full primary-btn mt-6 hidden" onclick="nextQuestion()">
-                Próxima Pergunta
+                PRÓXIMA PERGUNTA
             </button>
         </main>
         
@@ -117,7 +186,6 @@
         let totalEarned = 0;
 
         function selectAnswer(selectedButton, reward) {
-            // Desabilita todos os botões
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.disabled = true;
                 if (btn !== selectedButton) {
@@ -126,7 +194,6 @@
             });
             selectedButton.classList.add('selected');
 
-            // Mostra a recompensa
             setTimeout(() => {
                 showReward(reward);
             }, 500);
@@ -139,7 +206,6 @@
             rewardAmount.textContent = 'R$ 0,00';
             rewardPopup.classList.remove('hidden');
             
-            // Anima o valor da recompensa
             let currentValue = 0;
             const increment = reward / 20;
             const interval = setInterval(() => {
@@ -154,11 +220,9 @@
             setTimeout(() => {
                 rewardPopup.classList.add('hidden');
                 
-                // Atualiza o total
                 totalEarned += reward;
                 document.getElementById('total-earned').textContent = `R$ ${totalEarned.toFixed(2).replace('.', ',')}`;
 
-                // Mostra botão próxima pergunta
                 document.getElementById('next-question-btn').classList.remove('hidden');
             }, 2000);
         }
@@ -170,10 +234,24 @@
                 renderQuestion();
                 document.getElementById('next-question-btn').classList.add('hidden');
             } else {
-                // Quiz finalizado - vai para página de dados
-                localStorage.setItem('quizTotal', totalEarned);
-                window.location.href = 'dados.html';
+                showCongratulations();
             }
+        }
+
+        function showCongratulations() {
+            // Mostrar página de parabéns
+            const congratsPage = document.getElementById('congrats-page');
+            const finalReward = document.getElementById('final-reward');
+            
+            // Valor fixo R$ 450,00 sem animação
+            finalReward.textContent = 'R$ 450,00';
+            
+            congratsPage.classList.remove('hidden');
+        }
+
+        function goToDados() {
+            localStorage.setItem('quizTotal', totalEarned);
+            window.location.href = 'dados.html';
         }
 
         function renderQuestion() {
